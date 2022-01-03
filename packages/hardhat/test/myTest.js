@@ -29,7 +29,7 @@ describe("My Dapp", function () {
 
       // Uncomment the event and emit lines in YourContract.sol to make this test pass
 
-      /*it("Should emit a SetPurpose event ", async function () {
+      /* it("Should emit a SetPurpose event ", async function () {
         const [owner] = await ethers.getSigners();
 
         const newPurpose = "Another Test Purpose";
@@ -37,7 +37,16 @@ describe("My Dapp", function () {
         expect(await myContract.setPurpose(newPurpose)).to.
           emit(myContract, "SetPurpose").
             withArgs(owner.address, newPurpose);
-      });*/
+      }); */
+    });
+
+    describe("setCount()", function () {
+      it("Should be able to set a new count", async function () {
+        const newCount = 5;
+
+        await myContract.setCount(newCount);
+        expect(await myContract.count()).to.equal(newCount);
+      });
     });
   });
 });
