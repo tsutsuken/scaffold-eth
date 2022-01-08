@@ -7,7 +7,7 @@ import "hardhat/console.sol";
 // https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
 
 contract YourContract {
-    // event SetPurpose(address sender, string purpose);
+    event SetPurpose(address sender, string purpose);
 
     string public purpose = "Building Unstoppable Apps!!!";
     uint256 public count = 0;
@@ -19,7 +19,7 @@ contract YourContract {
     function setPurpose(string memory newPurpose) public {
         purpose = newPurpose;
         console.log(msg.sender, "set purpose to", purpose);
-        // emit SetPurpose(msg.sender, purpose);
+        emit SetPurpose(msg.sender, purpose);
     }
 
     function setCount(uint256 newCount) public {
