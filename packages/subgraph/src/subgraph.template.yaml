@@ -4,11 +4,11 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: YourContract
-    network: localhost
+    network: rinkeby
     source:
-      address: "{{localhost_YourContractAddress}}"
+      address: "{{rinkeby_YourContractAddress}}"
       abi: YourContract
-      startBlock: 1
+      startBlock: 9958472
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -18,7 +18,7 @@ dataSources:
         - Sender
       abis:
         - name: YourContract
-          file: ./abis/localhost_YourContract.json
+          file: ./abis/rinkeby_YourContract.json
       eventHandlers:
         - event: SetPurpose(address,string)
           handler: handleSetPurpose

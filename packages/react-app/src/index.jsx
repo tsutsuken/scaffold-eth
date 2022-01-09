@@ -13,7 +13,7 @@ const themes = {
 
 const prevTheme = window.localStorage.getItem("theme");
 
-const subgraphUri = "http://localhost:8000/subgraphs/name/scaffold-eth/your-contract";
+const subgraphUri = " https://api.studio.thegraph.com/query/18620/scaffold-eth-playground/v0.0.1";
 
 const client = new ApolloClient({
   uri: subgraphUri,
