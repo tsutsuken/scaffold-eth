@@ -13,6 +13,7 @@ contract YourContract is ChainlinkClient {
 
     using Chainlink for Chainlink.Request;
 
+    address public owner;
     uint256 public volume;
 
     address private oracle;
@@ -24,6 +25,8 @@ contract YourContract is ChainlinkClient {
     uint256 public count = 0;
 
     constructor() {
+        owner = msg.sender;
+
         /**
          * Network: Kovan
          * Oracle: 0xc57B33452b4F7BB189bB5AfaE9cc4aBa1f7a4FD8 (Chainlink Devrel
@@ -44,6 +47,11 @@ contract YourContract is ChainlinkClient {
         priceFeed = AggregatorV3Interface(
             0x9326BFA02ADD2366b30bacB125260Af641031331
         );
+    }
+
+    modifier onlyOwner() {
+        require(msg.sender == owner);
+        _;
     }
 
     /**
@@ -93,7 +101,13 @@ contract YourContract is ChainlinkClient {
         volume = _volume;
     }
 
-    // function withdrawLink() external {} - Implement a withdraw function to avoid locking your LINK in the contract
+    function withdrawLink() public onlyOwner {
+        LinkTokenInterface link = LinkTokenInterface(chainlinkTokenAddress());
+        require(
+            link.transfer(msg.sender, link.balanceOf(address(this))),
+            "Unable to transfer"
+        );
+    }
 
     /**
      * Returns the latest price
