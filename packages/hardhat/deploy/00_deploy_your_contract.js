@@ -3,6 +3,7 @@
 const { ethers } = require("hardhat");
 
 const localChainId = "31337";
+const kovanChainId = "42";
 
 const sleep = (ms) =>
   new Promise((r) =>
@@ -61,7 +62,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
 
   // Verify your contracts with Etherscan
   // You don't want to verify on localhost
-  if (chainId !== localChainId) {
+  if (chainId !== localChainId && chainId !== kovanChainId) {
     // wait for etherscan to be ready to verify
     await sleep(15000);
     await run("verify:verify", {
