@@ -73,11 +73,11 @@ const providers = [
 function App(props) {
   // specify all the chains your app is available on. Eg: ['localhost', 'mainnet', ...otherNetworks ]
   // reference './constants.js' for other networks
-  const networkOptions = [initialNetwork.name, "mainnet", "rinkeby"];
+  const networkOptions = [initialNetwork.name, "mainnet", "rinkeby", "kovan"];
 
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
-  const [selectedNetwork, setSelectedNetwork] = useState(networkOptions[2]);
+  const [selectedNetwork, setSelectedNetwork] = useState(networkOptions[3]);
   const location = useLocation();
 
   const targetNetwork = NETWORKS[selectedNetwork];
