@@ -4,11 +4,11 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: YourContract
-    network: rinkeby
+    network: kovan
     source:
-      address: "{{rinkeby_YourContractAddress}}"
+      address: "{{kovan_YourContractAddress}}"
       abi: YourContract
-      startBlock: 9958472
+      startBlock: 29233650
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -18,7 +18,7 @@ dataSources:
         - Sender
       abis:
         - name: YourContract
-          file: ./abis/rinkeby_YourContract.json
+          file: ./abis/kovan_YourContract.json
       eventHandlers:
         - event: SetPurpose(address,string)
           handler: handleSetPurpose

@@ -13,7 +13,13 @@ const themes = {
 
 const prevTheme = window.localStorage.getItem("theme");
 
-const subgraphUri = " https://api.studio.thegraph.com/query/18620/scaffold-eth-playground/v0.0.1";
+// for mainnet or rinkeby chain
+const subgraphUriForStudio = " https://api.studio.thegraph.com/query/18620/scaffold-eth-playground/v0.0.1";
+
+// for other chain
+const subgraphUriForHosted = "https://api.thegraph.com/subgraphs/name/tsutsuken/scaffold-eth-playground";
+
+const subgraphUri = subgraphUriForHosted;
 
 const client = new ApolloClient({
   uri: subgraphUri,
