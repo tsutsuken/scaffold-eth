@@ -10,6 +10,7 @@ import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
 contract YourContract is ChainlinkClient {
     event SetPurpose(address sender, string purpose);
+    event SetCount(address sender, uint256 count);
 
     using Chainlink for Chainlink.Request;
 
@@ -155,5 +156,6 @@ contract YourContract is ChainlinkClient {
     function setCount(uint256 newCount) public {
         count = newCount;
         console.log(msg.sender, "set count to", newCount);
+        emit SetCount(msg.sender, count);
     }
 }
