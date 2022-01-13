@@ -34,6 +34,14 @@ function Subgraph(props) {
         id
       }
     }
+    counts(first: 25, orderBy: createdAt, orderDirection: desc) {
+      id
+      count
+      createdAt
+      sender {
+        id
+      }
+    }
     senders {
       id
       address
@@ -49,6 +57,25 @@ function Subgraph(props) {
       title: "Purpose",
       dataIndex: "purpose",
       key: "purpose",
+    },
+    {
+      title: "Sender",
+      key: "id",
+      render: record => <Address value={record.sender.id} ensProvider={props.mainnetProvider} fontSize={16} />,
+    },
+    {
+      title: "createdAt",
+      key: "createdAt",
+      dataIndex: "createdAt",
+      render: d => new Date(d * 1000).toISOString(),
+    },
+  ];
+
+  const countsColumns = [
+    {
+      title: "Count",
+      dataIndex: "count",
+      key: "count",
     },
     {
       title: "Sender",
@@ -173,6 +200,12 @@ function Subgraph(props) {
 
         {data ? (
           <Table dataSource={data.purposes} columns={purposeColumns} rowKey="id" />
+        ) : (
+          <Typography>{loading ? "Loading..." : deployWarning}</Typography>
+        )}
+
+        {data ? (
+          <Table dataSource={data.counts} columns={countsColumns} rowKey="id" />
         ) : (
           <Typography>{loading ? "Loading..." : deployWarning}</Typography>
         )}

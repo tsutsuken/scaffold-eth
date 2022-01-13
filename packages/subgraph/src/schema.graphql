@@ -6,10 +6,20 @@ type Purpose @entity {
   transactionHash: String!
 }
 
+type Count @entity {
+  id: ID!
+  sender: Sender!
+  count: BigInt!
+  createdAt: BigInt!
+  transactionHash: String!
+}
+
 type Sender @entity {
   id: ID!
   address: Bytes!
   purposes: [Purpose!] @derivedFrom(field: "sender")
   createdAt: BigInt!
   purposeCount: BigInt!
+  counts: [Count!] @derivedFrom(field: "sender")
+  countCount: BigInt!
 }

@@ -22,4 +22,6 @@ dataSources:
       eventHandlers:
         - event: SetPurpose(address,string)
           handler: handleSetPurpose
+        - event: SetCount(address,uint256)
+          handler: handleSetCount
       file: ./src/mapping.ts
