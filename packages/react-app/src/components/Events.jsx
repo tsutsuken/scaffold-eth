@@ -30,10 +30,11 @@ export default function Events({ contracts, contractName, eventName, localProvid
         bordered
         dataSource={events}
         renderItem={item => {
+          const eventTitle = String(item.args[1]);
           return (
-            <List.Item key={item.blockNumber + "_" + item.args.sender + "_" + item.args.purpose}>
+            <List.Item key={item.blockNumber + "_" + item.args.sender + "_" + item.event}>
               <Address address={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
-              {item.args[1]}
+              {eventTitle}
             </List.Item>
           );
         }}
