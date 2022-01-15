@@ -174,6 +174,35 @@ function App(props) {
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
   */
 
+  const fetchEnsInfo = async address => {
+    const startTime = performance.now();
+
+    console.log("getEnsInfo");
+    if (mainnetProvider == null || address == null) {
+      return;
+    }
+
+    const ensName = await mainnetProvider.lookupAddress(address);
+    console.log({ ensName }); // brantly.eth
+    if (ensName == null) {
+      return;
+    }
+
+    const resolver = await mainnetProvider.getResolver(ensName);
+    if (resolver == null) {
+      return;
+    }
+
+    const avatar = await resolver.getText("avatar");
+    console.log({ avatar }); // eip155:1/erc721:0xb7F7F6C52F2e2fdb1963Eab30438024864c313F6/2430
+    const twitter = await resolver.getText("com.twitter");
+    console.log({ twitter }); // brantlymillegan
+
+    const endTime = performance.now();
+    console.log(endTime - startTime + "ms");
+  };
+  // fetchEnsInfo("0x983110309620D911731Ac0932219af06091b6744");
+
   //
   // 🧫 DEBUG 👨🏻‍🔬
   //
@@ -253,6 +282,15 @@ function App(props) {
         logoutOfWeb3Modal={logoutOfWeb3Modal}
         USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
       />
+      <Button
+        key="fetchEnsInfo"
+        size="large"
+        onClick={() => {
+          fetchEnsInfo("0x983110309620D911731Ac0932219af06091b6744");
+        }}
+      >
+        fetchEnsInfo
+      </Button>
       <Menu style={{ textAlign: "center", marginTop: 40 }} selectedKeys={[location.pathname]} mode="horizontal">
         <Menu.Item key="/">
           <Link to="/">App Home</Link>
@@ -273,7 +311,6 @@ function App(props) {
           <Link to="/subgraph">Subgraph</Link>
         </Menu.Item>
       </Menu>
-
       <Switch>
         <Route exact path="/">
           {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
@@ -349,9 +386,7 @@ function App(props) {
           />
         </Route>
       </Switch>
-
       <ThemeSwitch />
-
       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
         <div style={{ display: "flex", flex: 1, alignItems: "center" }}>
@@ -381,7 +416,6 @@ function App(props) {
           <FaucetHint localProvider={localProvider} targetNetwork={targetNetwork} address={address} />
         )}
       </div>
-
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
       <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
         <Row align="middle" gutter={[4, 4]}>
