@@ -11,6 +11,7 @@ import {
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 import React, { useCallback, useEffect, useState } from "react";
 import { Link, Route, Switch, useLocation } from "react-router-dom";
+import Davatar from "@davatar/react";
 import "./App.css";
 import {
   Account,
@@ -291,6 +292,12 @@ function App(props) {
       >
         fetchEnsInfo
       </Button>
+      <Davatar
+        size={120}
+        provider={mainnetProvider}
+        address={"0x983110309620D911731Ac0932219af06091b6744"}
+        style={{ borderRadius: 0 }}
+      />
       <Menu style={{ textAlign: "center", marginTop: 40 }} selectedKeys={[location.pathname]} mode="horizontal">
         <Menu.Item key="/">
           <Link to="/">App Home</Link>
