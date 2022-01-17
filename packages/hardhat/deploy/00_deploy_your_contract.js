@@ -18,6 +18,11 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
+  await deploy("YourCollectible", {
+    from: deployer,
+    log: true,
+  });
+
   await deploy("YourContract", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
@@ -72,4 +77,4 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     });
   }
 };
-module.exports.tags = ["YourContract"];
+module.exports.tags = ["YourCollectible", "YourContract"];
