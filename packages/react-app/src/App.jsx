@@ -1,4 +1,5 @@
-import { Alert, Button, Col, Menu, Row } from "antd";
+import { Alert, Button, Card, Col, List, Menu, Row } from "antd";
+
 import "antd/dist/antd.css";
 import {
   useBalance,
@@ -15,6 +16,8 @@ import Davatar from "@davatar/react";
 import "./App.css";
 import {
   Account,
+  Address,
+  AddressInput,
   Contract,
   Faucet,
   GasGauge,
@@ -170,6 +173,69 @@ function App(props) {
   // keep track of a variable from the contract in the local React state:
   const purpose = useContractReader(readContracts, "YourContract", "purpose");
 
+  // helper function to "Get" from IPFS
+  // you usually go content.toString() after this...
+  const { BufferList } = require("bl");
+  const ipfsAPI = require("ipfs-http-client");
+  const ipfs = ipfsAPI({ host: "ipfs.infura.io", port: "5001", protocol: "https" });
+  const getBufferFromIPFS = async hashToGet => {
+    console.log("getBufferFromIPFS");
+    for await (const file of ipfs.get(hashToGet)) {
+      console.log(file.path);
+      if (!file.content) continue;
+      const content = new BufferList();
+      for await (const chunk of file.content) {
+        content.append(chunk);
+      }
+      console.log(content);
+      return content;
+    }
+  };
+
+  // keep track of a variable from the contract in the local React state:
+  const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address]);
+  console.log("address:", address);
+  console.log("🤗 balance:", balance);
+  const yourBalance = balance && balance.toNumber && balance.toNumber();
+  console.log("yourBalance:", yourBalance);
+  const [yourCollectibles, setYourCollectibles] = useState([]);
+  const [transferToAddresses, setTransferToAddresses] = useState({});
+
+  useEffect(() => {
+    const updateYourCollectibles = async () => {
+      console.log("updateYourCollectibles");
+      const collectibleUpdate = [];
+      for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
+        try {
+          console.log("GEtting token index", tokenIndex);
+          const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(address, tokenIndex);
+          console.log("tokenId", tokenId);
+          const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
+          console.log("tokenURI", tokenURI);
+
+          const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
+          console.log("ipfsHash", ipfsHash);
+
+          const jsonManifestBuffer = await getBufferFromIPFS(ipfsHash);
+          console.log("jsonManifestBuffer", jsonManifestBuffer);
+
+          try {
+            const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
+            console.log("jsonManifest", jsonManifest);
+            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+            console.log("collectibleUpdate", collectibleUpdate);
+          } catch (e) {
+            console.log(e);
+          }
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      setYourCollectibles(collectibleUpdate);
+    };
+    updateYourCollectibles();
+  }, [address, yourBalance]);
+
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
@@ -297,6 +363,57 @@ function App(props) {
         provider={mainnetProvider}
         address={"0x983110309620D911731Ac0932219af06091b6744"}
         style={{ borderRadius: 0 }}
+      />
+      <List
+        bordered
+        dataSource={yourCollectibles}
+        renderItem={item => {
+          const id = item.id.toNumber();
+          return (
+            <List.Item key={id + "_" + item.uri + "_" + item.owner}>
+              <Card
+                title={
+                  <div>
+                    <span style={{ fontSize: 16, marginRight: 8 }}>#{id}</span> {item.name}
+                  </div>
+                }
+              >
+                <div>
+                  <img src={item.image} style={{ maxWidth: 150 }} />
+                </div>
+                <div>{item.description}</div>
+              </Card>
+
+              <div>
+                owner:{" "}
+                <Address
+                  address={item.owner}
+                  ensProvider={mainnetProvider}
+                  blockExplorer={blockExplorer}
+                  fontSize={16}
+                />
+                <AddressInput
+                  ensProvider={mainnetProvider}
+                  placeholder="transfer to address"
+                  value={transferToAddresses[id]}
+                  onChange={newValue => {
+                    const update = {};
+                    update[id] = newValue;
+                    setTransferToAddresses({ ...transferToAddresses, ...update });
+                  }}
+                />
+                <Button
+                  onClick={() => {
+                    console.log("writeContracts", writeContracts);
+                    tx(writeContracts.YourCollectible.transferFrom(address, transferToAddresses[id], id));
+                  }}
+                >
+                  Transfer
+                </Button>
+              </div>
+            </List.Item>
+          );
+        }}
       />
       <Menu style={{ textAlign: "center", marginTop: 40 }} selectedKeys={[location.pathname]} mode="horizontal">
         <Menu.Item key="/">
