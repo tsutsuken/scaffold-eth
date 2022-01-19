@@ -392,6 +392,7 @@ function App(props) {
                   blockExplorer={blockExplorer}
                   fontSize={16}
                 />
+                <Davatar size={100} provider={mainnetProvider} address={item.owner} style={{ borderRadius: 0 }} />
                 <AddressInput
                   ensProvider={mainnetProvider}
                   placeholder="transfer to address"
